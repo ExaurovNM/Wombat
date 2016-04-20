@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Wombat.Core
 {
-    public class WombatConverter
+    public class WombatConverter : IWombatConverter
     {
         private readonly Dictionary<Type, Dictionary<Type, Func<object, object>>> converters;
 
