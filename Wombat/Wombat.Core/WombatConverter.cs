@@ -11,7 +11,7 @@ namespace Wombat.Core
         {
             this.converters = new Dictionary<Type, Dictionary<Type, Func<object, object>>>();
 
-            this.Register<int, string>(integerValue => integerValue.ToString());
+            this.InitilizeBaseConvertors();
         }
 
         public bool IsSupported(Type sourceType, Type resultType)
@@ -34,14 +34,6 @@ namespace Wombat.Core
             return (TResult)this.converters[typeTSource][typeTResult](value);
         }
 
-        private void TryCreateSourceNode(Type typeTSource)
-        {
-            if (!this.converters.ContainsKey(typeTSource))
-            {
-                this.converters[typeTSource] = new Dictionary<Type, Func<object, object>>();
-            }
-        }
-
         public void Register<TSource, TResult>(Func<TSource, TResult> converter)
         {
             var typeTResult = typeof(TResult);
@@ -49,7 +41,7 @@ namespace Wombat.Core
 
             if (this.IsSupported(typeof(TResult), typeof(TSource)))
             {
-                throw new ArgumentException($"Pair {typeTSource.FullName} to {typeTResult.FullName} is alredy registered");
+                throw new ArgumentException($"Pair {typeTSource.FullName} to {typeTResult.FullName} is already registered");
             }
 
             this.TryCreateSourceNode(typeTSource);
@@ -75,6 +67,44 @@ namespace Wombat.Core
         private Func<object, object> ConvertFunctionToBase<TSource, TResult>(Func<TSource, TResult> converter)
         {
             return value => converter((TSource)value);
+        }
+
+        private void TryCreateSourceNode(Type typeTSource)
+        {
+            if (!this.converters.ContainsKey(typeTSource))
+            {
+                this.converters[typeTSource] = new Dictionary<Type, Func<object, object>>();
+            }
+        }
+
+        private void InitilizeBaseConvertors()
+        {
+            this.InitializeBaseStringConvertors();
+            this.InitializeBaseIntegerConvertors();
+        }
+
+        private void InitializeBaseStringConvertors()
+        {
+            //// String -> Int
+            this.Register<string, int>(int.Parse);
+
+            //// String -> Long
+            this.Register<string, long>(long.Parse);
+
+            //// String -> Float
+            this.Register<string, float>(float.Parse);
+
+            //// String -> Double
+            this.Register<string, double>(double.Parse);
+
+            //// String -> Decimal
+            this.Register<string, decimal>(decimal.Parse);
+        }
+
+        private void InitializeBaseIntegerConvertors()
+        {
+            //// Int -> String
+            this.Register<int, string>(integerValue => integerValue.ToString());
         }
     }
 }
