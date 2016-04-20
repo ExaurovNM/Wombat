@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Wombat.Core
+﻿namespace Wombat.Core
 {
+    using System;
+    using System.Collections.Generic;
+
     public class WombatConverter : IWombatConverter
     {
         private readonly Dictionary<Type, Dictionary<Type, Func<object, object>>> converters;
@@ -14,24 +14,43 @@ namespace Wombat.Core
             this.InitilizeBaseConvertors();
         }
 
-        public bool IsSupported(Type sourceType, Type resultType)
-        {
-            return 
-                this.converters.ContainsKey(sourceType) 
-                && this.converters[sourceType].ContainsKey(resultType);
-        }
-
         public TResult Convert<TSource, TResult>(TSource value)
         {
-            var typeTResult = typeof(TResult);
-            var typeTSource = typeof(TSource);
-
-            if (!this.IsSupported(typeTSource, typeTResult))
+            if (value == null)
             {
-                throw new ArgumentException($"Pair {typeTSource.FullName} to {typeTResult.FullName} is not supported");
+                throw new ArgumentNullException("value");
             }
 
+            Type typeTResult, typeTSource;
+            this.Validate<TSource, TResult>(out typeTResult, out typeTSource);
+
             return (TResult)this.converters[typeTSource][typeTResult](value);
+        }
+
+        public TResult Convert<TSource, TResult>(TSource value, TResult defaultValue)
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException("value");
+            }
+
+            Type typeTResult, typeTSource;
+            this.Validate<TSource, TResult>(out typeTResult, out typeTSource);
+
+            try
+            {
+                return (TResult)this.converters[typeTSource][typeTResult](value);
+            }
+            catch (Exception)
+            {
+                return defaultValue;
+            }
+        }
+
+        public bool IsSupported(Type sourceType, Type resultType)
+        {
+            return this.converters.ContainsKey(sourceType)
+                && this.converters[sourceType].ContainsKey(resultType);
         }
 
         public void Register<TSource, TResult>(Func<TSource, TResult> converter)
@@ -39,9 +58,9 @@ namespace Wombat.Core
             var typeTResult = typeof(TResult);
             var typeTSource = typeof(TSource);
 
-            if (this.IsSupported(typeof(TResult), typeof(TSource)))
+            if (this.IsSupported(typeTSource, typeTResult))
             {
-                throw new ArgumentException($"Pair {typeTSource.FullName} to {typeTResult.FullName} is already registered");
+                throw new ArgumentException(string.Format("Pair {0} to {1} is already registered", typeTSource.FullName, typeTResult.FullName));
             }
 
             this.TryCreateSourceNode(typeTSource);
@@ -51,17 +70,23 @@ namespace Wombat.Core
 
         public void Ovveride<TSource, TResult>(Func<TSource, TResult> converter)
         {
-            var typeTResult = typeof(TResult);
-            var typeTSource = typeof(TSource);
-
-            if (!this.IsSupported(typeTSource, typeTResult))
-            {
-                throw new ArgumentException($"Pair {typeTSource.FullName} to {typeTResult.FullName} is not supported");
-            }
+            Type typeTResult, typeTSource;
+            this.Validate<TSource, TResult>(out typeTResult, out typeTSource);
 
             this.TryCreateSourceNode(typeTSource);
 
             this.converters[typeTResult][typeTResult] = this.ConvertFunctionToBase(converter);
+        }
+
+        private void Validate<TSource, TResult>(out Type typeTResult, out Type typeTSource)
+        {
+            typeTResult = typeof(TResult);
+            typeTSource = typeof(TSource);
+
+            if (!this.IsSupported(typeTSource, typeTResult))
+            {
+                throw new ArgumentException(string.Format("Pair {0} to {1} is not supported", typeTSource.FullName, typeTResult.FullName));
+            }
         }
 
         private Func<object, object> ConvertFunctionToBase<TSource, TResult>(Func<TSource, TResult> converter)
