@@ -1,2 +1,2 @@
 language: csharp
-solution: Wombat\Wombat.sln
+solution: Wombat/Wombat.sln
