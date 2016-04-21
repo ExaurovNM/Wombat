@@ -12,6 +12,19 @@
             this.converters = converters;
         }
 
+        public static WombatConverter CreateInitialized()
+        {
+            var converter = CreateEmpty();
+            WombatConverterInitializer.InitilizeBaseConvertors(converter);
+
+            return converter;
+        }
+
+        public static WombatConverter CreateEmpty()
+        {
+            return new WombatConverter(new Dictionary<Type, Dictionary<Type, Func<object, object>>>());
+        }
+
         public TResult Convert<TSource, TResult>(TSource value)
         {
             if (value == null)
@@ -89,19 +102,6 @@
             this.TryCreateSourceNode(typeTSource);
 
             this.converters[typeTResult][typeTResult] = this.ConvertFunctionToBase(converter);
-        }
-
-        public WombatConverter CreateEmpty()
-        {
-            return new WombatConverter(new Dictionary<Type, Dictionary<Type, Func<object, object>>>());
-        }
-
-        public WombatConverter CreateInitialized()
-        {
-            var converter = this.CreateEmpty();
-            WombatConverterInitializer.InitilizeBaseConvertors(converter);
-
-            return converter;
         }
 
         private Func<object, object> ConvertFunctionToBase<TSource, TResult>(Func<TSource, TResult> converter)

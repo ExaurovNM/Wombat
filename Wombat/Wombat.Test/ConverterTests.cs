@@ -14,7 +14,7 @@
         [SetUp]
         public void SetUp()
         {
-            this.target = new WombatConverter();
+            this.target = WombatConverter.CreateInitialized();
         }
 
         [Test]
