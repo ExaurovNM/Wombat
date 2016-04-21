@@ -21,8 +21,13 @@
                 throw new ArgumentNullException("value");
             }
 
-            Type typeTResult, typeTSource;
-            this.Validate<TSource, TResult>(out typeTResult, out typeTSource);
+            var typeTResult = typeof(TResult);
+            var typeTSource = typeof(TSource);
+
+            if (!this.IsSupported(typeTSource, typeTResult))
+            {
+                throw new ArgumentException(string.Format("Pair {0} to {1} is not supported", typeTSource.FullName, typeTResult.FullName));
+            }
 
             return (TResult)this.converters[typeTSource][typeTResult](value);
         }
@@ -34,8 +39,13 @@
                 throw new ArgumentNullException("value");
             }
 
-            Type typeTResult, typeTSource;
-            this.Validate<TSource, TResult>(out typeTResult, out typeTSource);
+            var typeTResult = typeof(TResult);
+            var typeTSource = typeof(TSource);
+
+            if (!this.IsSupported(typeTSource, typeTResult))
+            {
+                throw new ArgumentException(string.Format("Pair {0} to {1} is not supported", typeTSource.FullName, typeTResult.FullName));
+            }
 
             try
             {
@@ -70,23 +80,17 @@
 
         public void Ovveride<TSource, TResult>(Func<TSource, TResult> converter)
         {
-            Type typeTResult, typeTSource;
-            this.Validate<TSource, TResult>(out typeTResult, out typeTSource);
-
-            this.TryCreateSourceNode(typeTSource);
-
-            this.converters[typeTResult][typeTResult] = this.ConvertFunctionToBase(converter);
-        }
-
-        private void Validate<TSource, TResult>(out Type typeTResult, out Type typeTSource)
-        {
-            typeTResult = typeof(TResult);
-            typeTSource = typeof(TSource);
+            var typeTResult = typeof(TResult);
+            var typeTSource = typeof(TSource);
 
             if (!this.IsSupported(typeTSource, typeTResult))
             {
                 throw new ArgumentException(string.Format("Pair {0} to {1} is not supported", typeTSource.FullName, typeTResult.FullName));
             }
+
+            this.TryCreateSourceNode(typeTSource);
+
+            this.converters[typeTResult][typeTResult] = this.ConvertFunctionToBase(converter);
         }
 
         private Func<object, object> ConvertFunctionToBase<TSource, TResult>(Func<TSource, TResult> converter)
