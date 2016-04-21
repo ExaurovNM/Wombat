@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Wombat.Core
+﻿namespace Wombat.Core
 {
+    using System;
+    using System.Collections.Generic;
+
     public class WombatConverter : IWombatConverter
     {
         private readonly Dictionary<Type, Dictionary<Type, Func<object, object>>> converters;
@@ -14,24 +14,53 @@ namespace Wombat.Core
             this.InitilizeBaseConvertors();
         }
 
-        public bool IsSupported(Type sourceType, Type resultType)
-        {
-            return 
-                this.converters.ContainsKey(sourceType) 
-                && this.converters[sourceType].ContainsKey(resultType);
-        }
-
         public TResult Convert<TSource, TResult>(TSource value)
         {
+            if (value == null)
+            {
+                throw new ArgumentNullException("value");
+            }
+
             var typeTResult = typeof(TResult);
             var typeTSource = typeof(TSource);
 
             if (!this.IsSupported(typeTSource, typeTResult))
             {
-                throw new ArgumentException($"Pair {typeTSource.FullName} to {typeTResult.FullName} is not supported");
+                throw new ArgumentException(string.Format("Pair {0} to {1} is not supported", typeTSource.FullName, typeTResult.FullName));
             }
 
             return (TResult)this.converters[typeTSource][typeTResult](value);
+        }
+
+        public TResult Convert<TSource, TResult>(TSource value, TResult defaultValue)
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException("value");
+            }
+
+            var typeTResult = typeof(TResult);
+            var typeTSource = typeof(TSource);
+
+            if (!this.IsSupported(typeTSource, typeTResult))
+            {
+                throw new ArgumentException(string.Format("Pair {0} to {1} is not supported", typeTSource.FullName, typeTResult.FullName));
+            }
+
+            try
+            {
+                return (TResult)this.converters[typeTSource][typeTResult](value);
+            }
+            catch (Exception)
+            {
+                return defaultValue;
+            }
+        }
+
+        public bool IsSupported(Type sourceType, Type resultType)
+        {
+            return this.converters.ContainsKey(sourceType)
+                && this.converters[sourceType].ContainsKey(resultType);
         }
 
         public void Register<TSource, TResult>(Func<TSource, TResult> converter)
@@ -39,9 +68,9 @@ namespace Wombat.Core
             var typeTResult = typeof(TResult);
             var typeTSource = typeof(TSource);
 
-            if (this.IsSupported(typeof(TResult), typeof(TSource)))
+            if (this.IsSupported(typeTSource, typeTResult))
             {
-                throw new ArgumentException($"Pair {typeTSource.FullName} to {typeTResult.FullName} is already registered");
+                throw new ArgumentException(string.Format("Pair {0} to {1} is already registered", typeTSource.FullName, typeTResult.FullName));
             }
 
             this.TryCreateSourceNode(typeTSource);
@@ -56,7 +85,7 @@ namespace Wombat.Core
 
             if (!this.IsSupported(typeTSource, typeTResult))
             {
-                throw new ArgumentException($"Pair {typeTSource.FullName} to {typeTResult.FullName} is not supported");
+                throw new ArgumentException(string.Format("Pair {0} to {1} is not supported", typeTSource.FullName, typeTResult.FullName));
             }
 
             this.TryCreateSourceNode(typeTSource);

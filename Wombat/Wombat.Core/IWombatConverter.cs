@@ -1,10 +1,12 @@
-﻿using System;
-
-namespace Wombat.Core
+﻿namespace Wombat.Core
 {
+    using System;
+
     public interface IWombatConverter
     {
         TResult Convert<TSource, TResult>(TSource value);
+
+        TResult Convert<TSource, TResult>(TSource value, TResult defaultValue);
 
         bool IsSupported(Type sourceType, Type resultType);
 
