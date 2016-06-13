@@ -54,6 +54,23 @@
         }
 
         [Test]
+        public void Convert_ShouldThrowsException_IfTypeNotSupported()
+        {
+            Assert.Throws<ArgumentException>(() => this.target.Convert(string.Empty, string.Empty));
+        }
+
+        [Test]
+        public void Convert_ShouldReturnDefaultValue_IfFuncThrowException()
+        {
+            this.target.Register<string, string>(s => { throw new NotImplementedException(); });
+            var defaultValue = string.Empty;
+
+            var result = this.target.Convert(string.Empty, defaultValue);
+
+            Assert.True(result == defaultValue);
+        }
+
+        [Test]
         public void Ovveride_ShouldThrowsException_IfSuchConverterNotRegistered()
         {
             Assert.Throws<ArgumentException>(() => this.target.Ovveride<byte, byte>(b => b));
@@ -63,6 +80,26 @@
         public void Ovveride_ShouldOverrideConverter_IfRegistered()
         {
             Assert.Throws<ArgumentException>(() => this.target.Ovveride<byte, byte>(b => b));
+        }
+
+        [Test]
+        public void Override_ShouldReturnExpectedValue_IfOverrided()
+        {
+            this.target.Register<string, string>(s => string.Empty);
+            this.target.Ovveride<string, string>(s => s);
+            var expected = "test";
+
+            var actual = this.target.Convert<string, string>(expected);
+
+            Assert.True(expected == actual);
+        }
+
+        [Test]
+        public void Register_ShouldThrowsException_IfAlreadyRegistered()
+        {
+            this.target.Register<string, string>(s => s);
+
+            Assert.Throws<ArgumentException>(() => this.target.Register<string, string>(s => s));
         }
     }
 }
