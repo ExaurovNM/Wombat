@@ -2,13 +2,13 @@ namespace Wombat.Core
 {
     internal static class WombatConverterInitializer
     {
-        public static void InitilizeBaseConvertors(WombatConverter converter)
+        public static void InitilizeBaseConvertors(IWombatConverter converter)
         {
             InitializeBaseStringConvertors(converter);
             InitializeBaseIntegerConvertors(converter);
         }
 
-        private static void InitializeBaseStringConvertors(WombatConverter converter)
+        private static void InitializeBaseStringConvertors(IWombatConverter converter)
         {
             //// String -> Int
             converter.Register<string, int>(int.Parse);
@@ -26,7 +26,7 @@ namespace Wombat.Core
             converter.Register<string, decimal>(decimal.Parse);
         }
 
-        private static void InitializeBaseIntegerConvertors(WombatConverter converter)
+        private static void InitializeBaseIntegerConvertors(IWombatConverter converter)
         {
             //// Int -> String
             converter.Register<int, string>(integerValue => integerValue.ToString());

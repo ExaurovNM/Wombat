@@ -9,7 +9,7 @@
     [TestFixture]
     public class ConverterTests
     {
-        private WombatConverter target;
+        private IWombatConverter target;
 
         [SetUp]
         public void SetUp()

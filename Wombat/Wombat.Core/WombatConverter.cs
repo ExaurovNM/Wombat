@@ -12,7 +12,7 @@
             this.converters = converters;
         }
 
-        public static WombatConverter CreateInitialized()
+        public static IWombatConverter CreateInitialized()
         {
             var converter = CreateEmpty();
             WombatConverterInitializer.InitilizeBaseConvertors(converter);
@@ -20,7 +20,7 @@
             return converter;
         }
 
-        public static WombatConverter CreateEmpty()
+        public static IWombatConverter CreateEmpty()
         {
             return new WombatConverter(new Dictionary<Type, Dictionary<Type, Func<object, object>>>());
         }
