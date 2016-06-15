@@ -33,7 +33,7 @@ using Wombat.Core;
 class Program
 {
 	static void Main(string[] args)
-        {
+	{
             IWombatConverter converter = WombatConverter.CreateEmpty();
 
             converter.Register<FirstClass, SecondClass>(
