@@ -72,8 +72,6 @@ class Program
             // Age: 11
             // NameAndAge: John are 11 years old
         }
-
-        
 }
 ```
 
