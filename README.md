@@ -32,7 +32,7 @@ using Wombat.Core;
 
 class Program
 {
-	public class FirstClass
+		public class FirstClass
         {
             public int Age { get; set; }
 
