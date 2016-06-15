@@ -7,7 +7,7 @@ Wombat is a small library providing simple interface to create and to use custom
 ## Installation
 You can install this library using NuGet into your project. Currently Wombat works with .NET 4.0 and higher.
 
-    Install-Package Wombat.Core
+    Install-Package WombatConverter
 
 After the installing nuget package is complete, you should add `using Wombat.Core;` to your source code and you are ready to use it.
 	
@@ -15,7 +15,7 @@ After the installing nuget package is complete, you should add `using Wombat.Cor
 
 ## How to use
 ```c#
-[Test]
+	[Test]
         public void Convert_ShouldConvertIntToString()
         {
             var expectedResult = "5";
