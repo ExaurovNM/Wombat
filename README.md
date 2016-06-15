@@ -14,22 +14,25 @@ After the installing nuget package is complete, you should add `using Wombat.Cor
     using Wombat.Core;
 
 ## How to use
+You can use it with default initialization:
 ```c#
-	static void Main(string[] args)
-        {
-            IWombatConverter converter = WombatConverter.CreateInitialized();
+static void Main(string[] args)
+{
+    IWombatConverter converter = WombatConverter.CreateInitialized();
 
-            int number = converter.Convert<string, int>("923");
-            string numbetToString = converter.Convert(number, string.Empty);
-        }
+    int number = converter.Convert<string, int>("923");
+    string numbetToString = converter.Convert(number, string.Empty);
+}
 ```
+
+And you can create your own convertation rules for any types:
 
 ```c#
 using Wombat.Core;
 
-    class Program
-    {
-        static void Main(string[] args)
+class Program
+{
+	static void Main(string[] args)
         {
             IWombatConverter converter = WombatConverter.CreateEmpty();
 
@@ -58,7 +61,7 @@ using Wombat.Core;
 
             public int Age { get; set; }
         }
-    }
+}
 ```
 
 ## Questions, comments or additions?
