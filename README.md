@@ -15,15 +15,50 @@ After the installing nuget package is complete, you should add `using Wombat.Cor
 
 ## How to use
 ```c#
-	[Test]
-        public void Convert_ShouldConvertIntToString()
+	static void Main(string[] args)
         {
-            var expectedResult = "5";
+            IWombatConverter converter = WombatConverter.CreateInitialized();
 
-            var actualResult = this.target.Convert<int, string>(5);
-
-            Assert.AreEqual(expectedResult, actualResult);
+            int number = converter.Convert<string, int>("923");
+            string numbetToString = converter.Convert(number, string.Empty);
         }
+```
+
+```c#
+using Wombat.Core;
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            IWombatConverter converter = WombatConverter.CreateEmpty();
+
+            converter.Register<FirstClass, SecondClass>(
+                firstClass =>
+                    {
+                        return new SecondClass
+                                   {
+                                       Age = firstClass.Age,
+                                       NameAndAge = string.Format("{0} are {1} years old",
+                                                        firstClass.Name, firstClass.Age)
+                                   };
+                    });
+        }
+
+        public class FirstClass
+        {
+            public int Age { get; set; }
+
+            public string Name { get; set; }
+        }
+
+        public class SecondClass
+        {
+            public string NameAndAge { get; set; }
+
+            public int Age { get; set; }
+        }
+    }
 ```
 
 ## Questions, comments or additions?
