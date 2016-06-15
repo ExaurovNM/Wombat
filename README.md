@@ -9,6 +9,6 @@ You can install this library using NuGet into your project. Currently Wombat wor
 
     Install-Package Wombat.Core
 
-After the downloading is complete, just add `using Wombat.Core;` to your source code and you are ready to test in the most elegant and developer friendly way.
+After the installing nuget package is complete, you should add `using Wombat.Core;` to your source code and you are ready to use it.
 	
     using Wombat.Core;
