@@ -46,6 +46,16 @@ class Program
                                                         firstClass.Name, firstClass.Age)
                                    };
                     });
+            
+            SecondClass secondClass = converter.Convert<FirstClass, SecondClass>(new FirstClass { Age = 11, Name = "John" });
+
+            Console.WriteLine("Age: " + secondClass.Age);
+            Console.WriteLine("NameAndAge: " + secondClass.NameAndAge);
+            Console.ReadKey();
+
+            // Output:
+            // Age: 11
+            // NameAndAge: John are 11 years old
         }
 
         public class FirstClass
