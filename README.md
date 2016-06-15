@@ -32,6 +32,20 @@ using Wombat.Core;
 
 class Program
 {
+	public class FirstClass
+        {
+            public int Age { get; set; }
+
+            public string Name { get; set; }
+        }
+
+        public class SecondClass
+        {
+            public string NameAndAge { get; set; }
+
+            public int Age { get; set; }
+        }
+        
 	static void Main(string[] args)
 	{
             IWombatConverter converter = WombatConverter.CreateEmpty();
@@ -59,19 +73,7 @@ class Program
             // NameAndAge: John are 11 years old
         }
 
-        public class FirstClass
-        {
-            public int Age { get; set; }
-
-            public string Name { get; set; }
-        }
-
-        public class SecondClass
-        {
-            public string NameAndAge { get; set; }
-
-            public int Age { get; set; }
-        }
+        
 }
 ```
 
