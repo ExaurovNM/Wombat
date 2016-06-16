@@ -1,8 +1,8 @@
 language: csharp
-solution: Wombat/Wombat.sln
+solution: Wombat.sln
 install:
-  - nuget restore Wombat/Wombat.sln
+  - nuget restore Wombat.sln
   - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 script:
-  - xbuild /p:Configuration=Release Wombat/Wombat.sln
+  - xbuild /p:Configuration=Release Wombat.sln
   - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./Wombat/test/Wombat.Converter.Tests/bin/Release/Wombat.Converter.Tests.dll
