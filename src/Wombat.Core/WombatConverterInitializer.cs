@@ -1,4 +1,4 @@
-namespace Wombat.Core
+﻿namespace Wombat.Core
 {
     internal static class WombatConverterInitializer
     {

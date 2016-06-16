@@ -1,4 +1,4 @@
-﻿namespace Wombat.Test
+﻿namespace Wombat.Converter.Tests
 {
     using System;
 
